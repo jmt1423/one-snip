@@ -10,7 +10,8 @@
 	"scripts": {
 		"build": "babel --out-dir=dist source",
 		"dev": "babel --out-dir=dist --watch source",
-		"test": "prettier --check . && ava"
+		"test": "prettier --check . && ava",
+		"pretest": "npm run build"
 	},
 	"files": [
 		"dist"
