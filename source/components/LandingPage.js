@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import {Box} from 'ink';
+import {Box, useApp} from 'ink';
 import SelectInput from 'ink-select-input';
 import Gradient from 'ink-gradient';
 import BigText from 'ink-big-text';
-import SaveSnippet from './SaveSnippet.js';
+import InputSnippet from './SnippetInput.js';
 
 export default function LandingPage({onStart}) {
+	const {exit} = useApp();
 	const [currentView, setCurrentView] = useState('landing');
 	const items = [
 		{label: 'Enter', value: 'start'},
@@ -17,14 +18,14 @@ export default function LandingPage({onStart}) {
 		if (item.value === 'start') {
 			onStart();
 		} else if (item.value === 'exit') {
-			process.exit(0);
+			exit();
 		} else if (item.value === 'save') {
 			setCurrentView('saveSnippet');
 		}
 	};
 
 	if (currentView === 'saveSnippet') {
-		return <SaveSnippet />;
+		return <InputSnippet />;
 	}
 
 	return (

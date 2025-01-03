@@ -7,19 +7,32 @@ const reducer = (state, action) => {
 			return {
 				...state,
 				innerHeight: action.innerHeight,
+				scrollTop: Math.min(
+					state.scrollTop,
+					Math.max(0, action.innerHeight - state.height),
+				),
+			};
+		case 'SET_HEIGHT':
+			return {
+				...state,
+				height: action.height,
+				scrollTop: Math.min(
+					state.scrollTop,
+					Math.max(0, state.innerHeight - action.height),
+				),
 			};
 		case 'SCROLL_DOWN':
 			return {
 				...state,
 				scrollTop: Math.min(
+					state.scrollTop + 4,
 					Math.max(0, state.innerHeight - state.height),
-					state.scrollTop + 1,
 				),
 			};
 		case 'SCROLL_UP':
 			return {
 				...state,
-				scrollTop: Math.max(0, state.scrollTop - 1),
+				scrollTop: Math.max(0, state.scrollTop - 4),
 			};
 		default:
 			return state;
@@ -35,6 +48,7 @@ export default function ScrollArea({height, children}) {
 
 	const innerRef = useRef();
 
+	// Update `innerHeight` when the content changes
 	useEffect(() => {
 		if (innerRef.current) {
 			const dimensions = measureElement(innerRef.current);
@@ -44,6 +58,14 @@ export default function ScrollArea({height, children}) {
 			});
 		}
 	}, [children]);
+
+	// Update `height` dynamically when the terminal size changes
+	useEffect(() => {
+		dispatch({
+			type: 'SET_HEIGHT',
+			height,
+		});
+	}, [height]);
 
 	useInput((_input, key) => {
 		if (key.downArrow) {
